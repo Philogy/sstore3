@@ -1,0 +1,17 @@
+#define function getStoreContents() view returns ()
+
+#define macro _CONSTRUCTOR(zero) = takes(0) returns(0) {
+    __FUNC_SIG(getStoreContents)  // [getStoreContents.selector]
+    <zero>                        // [0, getStoreContents.selector]
+    mstore                        // []
+    <zero> <zero>                 // [0, 0]
+    0x04 0x1c                     // [28, 4, 0, 0]
+    caller gas                    // [gas, msg.sender, 28, 4, 0, 0]
+    staticcall                    // [_]
+    returndatasize                // [rdz, _]
+    <zero> <zero>                 // [0, 0, rdz, _]
+    returndatacopy                // [success]
+    returndatasize                // [rdz, _]
+    <zero>                        // [0, rdz, _]
+    return                        // [_]
+}

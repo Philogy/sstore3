@@ -8,11 +8,40 @@ struct TransientBuffer {
 }
 
 /// @author philogy <https://github.com/philogy>
-/// TODO: Replace `SSTORE` with `TSTORE` once EIP-1153 is live and remove `reset`.
+/// TODO: Replace `SSTORE` with `TSTORE` once EIP-1153 is live and remove `reset`, `initPrimary`, `initRange`.
 library TransientBufferLib {
     uint256 internal constant MAX_DATA_SIZE = 24576;
+    uint256 internal constant BASE_PRIMARY = 0x10000;
+    uint256 internal constant BASE_DATA = 1;
 
     error DataTooLarge();
+    error InitRangeInvalid(uint256 start, uint256 end);
+
+    function initPrimary(TransientBuffer storage self) internal {
+        assembly {
+            sstore(self.slot, BASE_PRIMARY)
+        }
+    }
+
+    function initRange(TransientBuffer storage self, uint256 start, uint256 end) internal {
+        assembly {
+            if or(gt(start, end), gt(end, div(MAX_DATA_SIZE, 0x20))) {
+                mstore(0x00, 0x0f1ad8ab)
+                mstore(0x20, start)
+                mstore(0x40, end)
+                revert(0x1c, 0x44)
+            }
+
+            // Compute first data slot, solidity-style. (`keccak256(var.slot)`)
+            mstore(0x00, self.slot)
+            let dataSlot := keccak256(0x00, 0x20)
+
+            for {
+                let endSlot := add(dataSlot, end)
+                dataSlot := add(dataSlot, start)
+            } lt(dataSlot, endSlot) { dataSlot := add(dataSlot, 1) } { sstore(dataSlot, BASE_DATA) }
+        }
+    }
 
     function write(TransientBuffer storage self, bytes memory data) internal {
         assembly {
@@ -63,9 +92,14 @@ library TransientBufferLib {
         }
     }
 
+    /**
+     * @dev Resets buffer based on `size`-bytes. Resets storage slots to a set non-zero base value,
+     * will increase one-time write costs
+     */
     function reset(TransientBuffer storage self, uint256 size) internal {
         assembly {
-            sstore(self.slot, 0)
+            // Reset to non-zero value to reduce future cost.
+            sstore(self.slot, BASE_PRIMARY)
 
             // Compute first data slot, solidity-style. (`keccak256(var.slot)`)
             mstore(0x00, self.slot)
@@ -73,7 +107,7 @@ library TransientBufferLib {
 
             for { let lastDataSlot := add(dataSlot, shr(5, add(size, 1))) } lt(dataSlot, lastDataSlot) {
                 dataSlot := add(dataSlot, 1)
-            } { sstore(dataSlot, 0) }
+            } { sstore(dataSlot, BASE_DATA) }
         }
     }
 }

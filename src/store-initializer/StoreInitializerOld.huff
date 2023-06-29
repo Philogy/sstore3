@@ -1,0 +1,8 @@
+#include "./BaseInitializer.huff"
+
+/// @dev Expects no ETH in constructor (uses `CALLVALUE` as `PUSH0`).
+#define macro CONSTRUCTOR() = takes(0) returns(0) {
+    _CONSTRUCTOR(callvalue)
+}
+
+#define macro MAIN() = takes(0) returns(0) { }
