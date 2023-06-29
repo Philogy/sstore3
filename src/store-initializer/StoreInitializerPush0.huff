@@ -1,7 +1,0 @@
-#include "./BaseInitializer.huff"
-
-#define macro CONSTRUCTOR() = takes(0) returns(0) {
-    _CONSTRUCTOR(push0)
-}
-
-#define macro MAIN() = takes(0) returns(0) { }

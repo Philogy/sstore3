@@ -1,8 +1,8 @@
-#define function getStoreContents() view returns ()
+#define function __getStore() view returns ()
 
 #define macro _CONSTRUCTOR(zero) = takes(0) returns(0) {
-    __FUNC_SIG(getStoreContents)  // [getStoreContents.selector]
-    <zero>                        // [0, getStoreContents.selector]
+    __FUNC_SIG(__getStore)        // [__getStore.selector]
+    <zero>                        // [0, __getStore.selector]
     mstore                        // []
     <zero> <zero>                 // [0, 0]
     0x04 0x1c                     // [28, 4, 0, 0]
@@ -15,3 +15,13 @@
     <zero>                        // [0, rdz, _]
     return                        // [_]
 }
+
+/**
+ * @dev Expects no ETH in constructor (uses `CALLVALUE` as `PUSH0`). Avoids using actual `PUSH0` for
+ * backwards compatibility with EVM chains that haven't yet activated the Shanghai hardfork.
+ */
+#define macro CONSTRUCTOR() = takes(0) returns(0) {
+    _CONSTRUCTOR(callvalue)
+}
+
+#define macro MAIN() = takes(0) returns(0) { }
