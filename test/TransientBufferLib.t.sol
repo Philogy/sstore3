@@ -17,7 +17,7 @@ contract TransientBufferTest is Test {
     }
 
     function testWriteRead(bytes memory randomBytes) public {
-        uint boundLength = bound(randomBytes.length, 0, 24576);
+        uint256 boundLength = bound(randomBytes.length, 0, 24576);
         assembly {
             mstore(randomBytes, boundLength)
         }
@@ -25,9 +25,8 @@ contract TransientBufferTest is Test {
         assertEq(readBuffer(), randomBytes);
     }
 
-    function readBuffer() internal returns (bytes memory ) {
-        (bool success, bytes memory contents)
-        = address(buffer).staticcall(abi.encodeCall(MockBuffer.read, ()));
+    function readBuffer() internal returns (bytes memory) {
+        (bool success, bytes memory contents) = address(buffer).staticcall(abi.encodeCall(MockBuffer.read, ()));
         assertTrue(success);
         return contents;
     }
