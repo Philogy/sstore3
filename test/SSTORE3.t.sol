@@ -13,15 +13,17 @@ contract SSTORE3Test is Test {
     bytes1 internal constant DISALLOWED_EOF_BYTE = 0xEF;
 
     function setUp() public {
-        s = new MockSSTORE3();
+        s = new MockSSTORE3(64);
     }
 
-    function testStoreLoad(uint256 pointer, bytes memory data) public {
-        vm.assume(data[0] != DISALLOWED_EOF_BYTE);
+    function test_fuzzingStoreLoad(uint256 pointer, bytes memory data) public {
+        if (data.length != 0) {
+            vm.assume(data[0] != DISALLOWED_EOF_BYTE);
 
-        uint256 boundLength = bound(data.length, 0, DATA_CAP);
-        assembly {
-            mstore(data, boundLength)
+            uint256 boundLength = bound(data.length, 0, DATA_CAP);
+            assembly {
+                mstore(data, boundLength)
+            }
         }
         address storeAddr = s.store(pointer, data);
 

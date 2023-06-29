@@ -16,7 +16,7 @@ contract TransientBufferTest is Test {
         assertEq(readBuffer(), new bytes(0));
     }
 
-    function testWriteRead(bytes memory randomBytes) public {
+    function test_fuzzingWriteRead(bytes memory randomBytes) public {
         uint256 boundLength = bound(randomBytes.length, 0, 24576);
         assembly {
             mstore(randomBytes, boundLength)

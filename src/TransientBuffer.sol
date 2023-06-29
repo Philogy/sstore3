@@ -11,7 +11,6 @@ struct TransientBuffer {
 /// TODO: Replace `SSTORE` with `TSTORE` once EIP-1153 is live and remove `reset`, `initPrimary`, `initRange`.
 library TransientBufferLib {
     uint256 internal constant MAX_DATA_SIZE = 24576;
-    uint256 internal constant BASE_PRIMARY = 0x10000;
     uint256 internal constant BASE_DATA = 1;
 
     error DataTooLarge();
@@ -19,7 +18,7 @@ library TransientBufferLib {
 
     function initPrimary(TransientBuffer storage self) internal {
         assembly {
-            sstore(self.slot, BASE_PRIMARY)
+            sstore(self.slot, BASE_DATA)
         }
     }
 
@@ -51,8 +50,8 @@ library TransientBufferLib {
                 revert(0x1c, 0x04)
             }
 
-            // Stores first 30 bytes packed with the 2-byte data length (data[:20] ++ len).
-            sstore(self.slot, or(dataLen, shl(16, mload(add(data, 0x1e)))))
+            // Stores first 30 bytes packed with the 2-byte data length (len ++ data[:30]).
+            sstore(self.slot, mload(add(data, 0x1e)))
 
             // Compute first data slot, solidity-style. (`keccak256(var.slot)`)
             mstore(0x00, self.slot)
@@ -77,9 +76,9 @@ library TransientBufferLib {
 
             // Get length + up to first 30 bytes, prepare in memory.
             let primaryData := sload(self.slot)
-            mstore(0x00, primaryData)
-            // Length stored in last 2 bytes.
-            let dataLen := and(primaryData, 0xffff)
+            mstore(0x00, shl(16, primaryData))
+            // Length stored in top 2 bytes.
+            let dataLen := shr(240, primaryData)
 
             // Don't have to worry about memory safety because will by `RETURN`ing directly.
             // Copy buffer data from storage => memory.
@@ -99,7 +98,7 @@ library TransientBufferLib {
     function reset(TransientBuffer storage self, uint256 size) internal {
         assembly {
             // Reset to non-zero value to reduce future cost.
-            sstore(self.slot, BASE_PRIMARY)
+            sstore(self.slot, BASE_DATA)
 
             // Compute first data slot, solidity-style. (`keccak256(var.slot)`)
             mstore(0x00, self.slot)

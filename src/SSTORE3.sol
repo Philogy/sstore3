@@ -8,13 +8,13 @@ abstract contract SSTORE3 {
     TransientBuffer private buffer;
 
     /**
-     *-------------------------------------------------------------------------------+
+     * ------------------------------------------------------------------------------+
      *                                                                               |
      * CREATION (23 bytes)                                                           |
      *                                                                               |
-     *-------------+---------------------------+--------------+----------------------+
+     * ------------+---------------------------+--------------+----------------------+
      * Opcode      | Mnemonic                  | Stack        | Memory               |
-     *-------------+---------------------------+--------------+----------------------+
+     * ------------+---------------------------+--------------+----------------------+
      *                                                                               |
      * :::: Put `__getStore()` selector in memory. ::::::::::::::::::::::::::::::::: |
      * 63 a817a495 | PUSH4 sel("__getStore()") | s            | -                    |
@@ -40,7 +40,7 @@ abstract contract SSTORE3 {
      * 3d          | RETURNDATASIZE            | r _          | [0..rds): store data |
      * 34          | CALLVALUE                 | 0 r _        | [0..rds): store data |
      * f3          | RETURN                    | _            | [0..rds): store data |
-     *-------------+---------------------------+--------------+----------------------+
+     * ------------+---------------------------+--------------+----------------------+
      */
     uint256 internal constant STORE_BYTECODE = 0x6362436ce9345234346004601c335afa3d34343e3d34f3;
     uint256 internal constant STORE_INITHASH = 0xd7faf9989a158ef360480b939b5edcc1303fa36a994ba2259497d87719fe94b5;
@@ -48,7 +48,7 @@ abstract contract SSTORE3 {
     error FailedToInitializeStore();
     error DataRangeInvalid(uint256 start, uint256 end);
 
-    function __getStoreData() external view {
+    function __getStore() external view {
         buffer.directReturn();
     }
 

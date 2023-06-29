@@ -5,9 +5,9 @@ import {SSTORE3} from "src/SSTORE3.sol";
 
 /// @author philogy <https://github.com/philogy>
 contract MockSSTORE3 is SSTORE3 {
-    constructor() {
+    constructor(uint256 initEnd) {
         _bufferInitPrimary();
-        _bufferInitRange(0, 64);
+        _bufferInitRange(0, initEnd);
     }
 
     function store(uint256 pointer, bytes memory data) external returns (address) {
