@@ -7,13 +7,14 @@ struct TransientBuffer {
     uint256 ___placeholder;
 }
 
-/// @author philogy <https://github.com/philogy>
-/// TODO: Replace `SSTORE` with `TSTORE` once EIP-1153 is live and remove `reset`, `initPrimary`, `initRange`.
+/**
+ * @author philogy <https://github.com/philogy>
+ * @dev TODO: Replace `SSTORE` with `TSTORE` once EIP-1153 is live and remove `reset`,
+ * `initPrimary`, `initRange` (transient storage always defaults to 0 at the start of transactions).
+ */
 library TransientBufferLib {
-    uint256 internal constant MAX_DATA_SIZE = 24576;
     uint256 internal constant BASE_DATA = 1;
 
-    error DataTooLarge();
     error InitRangeInvalid(uint256 start, uint256 end);
 
     function initPrimary(TransientBuffer storage self) internal {
@@ -24,7 +25,7 @@ library TransientBufferLib {
 
     function initRange(TransientBuffer storage self, uint256 start, uint256 end) internal {
         assembly {
-            if or(gt(start, end), gt(end, div(MAX_DATA_SIZE, 0x20))) {
+            if gt(start, end) {
                 mstore(0x00, 0x0f1ad8ab)
                 mstore(0x20, start)
                 mstore(0x40, end)
@@ -45,10 +46,6 @@ library TransientBufferLib {
     function write(TransientBuffer storage self, bytes memory data) internal {
         assembly {
             let dataLen := mload(data)
-            if gt(dataLen, MAX_DATA_SIZE) {
-                mstore(0x00, 0x54ef47ee)
-                revert(0x1c, 0x04)
-            }
 
             // Stores first 30 bytes packed with the 2-byte data length (len ++ data[:30]).
             sstore(self.slot, mload(add(data, 0x1e)))

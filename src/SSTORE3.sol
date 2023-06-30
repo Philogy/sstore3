@@ -7,6 +7,8 @@ import {TransientBuffer} from "./TransientBuffer.sol";
 abstract contract SSTORE3 {
     TransientBuffer private buffer;
 
+    uint256 internal constant MAX_DATA_SIZE = 24575;
+
     /**
      * ------------------------------------------------------------------------------+
      *                                                                               |
@@ -45,8 +47,9 @@ abstract contract SSTORE3 {
     uint256 internal constant STORE_BYTECODE = 0x6362436ce9345234346004601c335afa3d34343e3d34f3;
     uint256 internal constant STORE_INITHASH = 0xd7faf9989a158ef360480b939b5edcc1303fa36a994ba2259497d87719fe94b5;
 
-    error FailedToInitializeStore();
     error DataRangeInvalid(uint256 start, uint256 end);
+    error FailedToInitializeStore();
+    error DataTooLarge();
 
     function __getStore() external view {
         buffer.directReturn();
@@ -61,6 +64,8 @@ abstract contract SSTORE3 {
     }
 
     function sstore3(uint256 pointer, bytes memory data) internal returns (address store) {
+        uint length = data.length;
+        if (length > MAX_DATA_SIZE) revert DataTooLarge();
         buffer.write(data);
         assembly {
             mstore(0x00, STORE_BYTECODE)

@@ -8,6 +8,7 @@ import {MockBuffer} from "./mocks/MockBuffer.sol";
 contract TransientBufferTest is Test {
     MockBuffer buffer;
 
+    uint256 internal constant MAX_DATA_SIZE = 24575;
     function setUp() public {
         buffer = new MockBuffer();
     }
@@ -17,7 +18,7 @@ contract TransientBufferTest is Test {
     }
 
     function test_fuzzingWriteRead(bytes memory randomBytes) public {
-        uint256 boundLength = bound(randomBytes.length, 0, 24576);
+        uint256 boundLength = bound(randomBytes.length, 0, MAX_DATA_SIZE);
         assembly {
             mstore(randomBytes, boundLength)
         }

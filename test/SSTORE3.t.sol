@@ -8,9 +8,8 @@ import {MockSSTORE3} from "./mocks/MockSSTORE3.sol";
 contract SSTORE3Test is Test {
     MockSSTORE3 s;
 
-    uint256 internal constant DATA_CAP = 24576;
-
     bytes1 internal constant DISALLOWED_EOF_BYTE = 0xEF;
+    uint256 internal constant DATA_CAP = 24575;
 
     function setUp() public {
         s = new MockSSTORE3(64);
