@@ -8,7 +8,6 @@ import {MockSSTORE3} from "./mocks/MockSSTORE3.sol";
 contract SSTORE3Test is Test {
     MockSSTORE3 s;
 
-    bytes1 internal constant DISALLOWED_EOF_BYTE = 0xEF;
     uint256 internal constant DATA_CAP = 24575;
 
     function setUp() public {
@@ -16,18 +15,18 @@ contract SSTORE3Test is Test {
     }
 
     function test_fuzzingStoreLoad(uint256 pointer, bytes memory data) public {
-        if (data.length != 0) {
-            vm.assume(data[0] != DISALLOWED_EOF_BYTE);
-
-            uint256 boundLength = bound(data.length, 0, DATA_CAP);
-            assembly {
-                mstore(data, boundLength)
-            }
+        uint256 boundLength = bound(data.length, 0, DATA_CAP);
+        assembly {
+            mstore(data, boundLength)
         }
         address storeAddr = s.store(pointer, data);
 
         bytes memory dataOut = s.load(pointer);
         assertEq(dataOut, data);
-        assertEq(storeAddr.code, data);
+        assertEq(storeAddr.code, abi.encodePacked(bytes1(hex"00"), data));
+    }
+
+    function test_test() public {
+        test_fuzzingStoreLoad(0, hex"");
     }
 }

@@ -7,13 +7,16 @@
     <zero> <zero>                 // [0, 0]
     0x04 0x1c                     // [28, 4, 0, 0]
     caller gas                    // [gas, msg.sender, 28, 4, 0, 0]
-    staticcall                    // [_]
-    returndatasize                // [rdz, _]
-    <zero> <zero>                 // [0, 0, rdz, _]
-    returndatacopy                // [success]
-    returndatasize                // [rdz, _]
-    <zero>                        // [0, rdz, _]
-    return                        // [_]
+    staticcall                    // [success]
+    success jumpi                 // []
+        <zero> <zero> revert      // []
+    success:                      // []
+        returndatasize            // [rdz]
+        <zero> <zero>             // [0, 0, rdz]
+        returndatacopy            // [success]
+        returndatasize            // [rdz]
+        <zero>                    // [0, rdz]
+        return                    // []
 }
 
 /**

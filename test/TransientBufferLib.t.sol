@@ -9,12 +9,13 @@ contract TransientBufferTest is Test {
     MockBuffer buffer;
 
     uint256 internal constant MAX_DATA_SIZE = 24575;
+
     function setUp() public {
         buffer = new MockBuffer();
     }
 
     function testDefault() public {
-        assertEq(readBuffer(), new bytes(0));
+        assertEq(readBuffer(), hex"00");
     }
 
     function test_fuzzingWriteRead(bytes memory randomBytes) public {
@@ -23,7 +24,7 @@ contract TransientBufferTest is Test {
             mstore(randomBytes, boundLength)
         }
         buffer.write(randomBytes);
-        assertEq(readBuffer(), randomBytes);
+        assertEq(readBuffer(), abi.encodePacked(hex"00", randomBytes));
     }
 
     function readBuffer() internal returns (bytes memory) {
