@@ -84,6 +84,7 @@ library TransientBufferLib {
                 dataSlot := add(dataSlot, 1)
             } { mstore(offset, sload(dataSlot)) }
 
+            // Don't ABI encode return data to simplify initializer contract.
             return(0, dataLen)
         }
     }

@@ -40,19 +40,19 @@ abstract contract SSTORE3 {
      * 0x16 | fd          | REVERT                    |              | [28..32): selector   |
      *                                                                                      |
      * ::::::::::: Copy data into memory. ::::::::::::::::::::::::::::::::::::::::::::::::: |
-     * 0x17 | 5b          | JUMPDEST                  | r _          | [28..32): selector   |
-     * 0x18 | 3d          | RETURNDATASIZE            | r _          | [28..32): selector   |
-     * 0x19 | 34          | CALLVALUE                 | 0 r _        | [28..32): selector   |
-     * 0x1a | 34          | CALLVALUE                 | 0 0 r _      | [28..32): selector   |
-     * 0x1b | 3e          | RETURNDATACOPY            | 1            | [0..rds): store data |
+     * 0x17 | 5b          | JUMPDEST                  |              | [28..32): selector   |
+     * 0x18 | 3d          | RETURNDATASIZE            | r            | [28..32): selector   |
+     * 0x19 | 34          | CALLVALUE                 | 0 r          | [28..32): selector   |
+     * 0x1a | 34          | CALLVALUE                 | 0 0 r        | [28..32): selector   |
+     * 0x1b | 3e          | RETURNDATACOPY            |              | [0..rds): store data |
      *                                                                                      |
      * ::::::::::: Return data. ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: |
-     * 0x1c | 3d          | RETURNDATASIZE            | r _          | [0..rds): store data |
-     * 0x1d | 34          | CALLVALUE                 | 0 r _        | [0..rds): store data |
-     * 0x1e | f3          | RETURN                    | _            | [0..rds): store data |
+     * 0x1c | 3d          | RETURNDATASIZE            | r            | [0..rds): store data |
+     * 0x1d | 34          | CALLVALUE                 | 0 r          | [0..rds): store data |
+     * 0x1e | f3          | RETURN                    |              | [0..rds): store data |
      * -----+-------------+---------------------------+--------------+----------------------+
-     * @dev Use `CALLVALUE` as backwards compatible PUSH0 (`CREATE2` is always done without any ETH).
-     * Generated from `./StoreInitializer.huff`.
+     * @dev Generated from `./StoreInitializer.huff`. Uses `CALLVALUE` as backwards compatible
+     * PUSH0 (`CREATE2` is always done without any ETH).
      */
     uint256 internal constant STORE_BYTECODE = 0x6362436ce9345234346004601c335afa610017573434fd5b3d34343e3d34f3;
     uint256 internal constant STORE_INITHASH = 0x84618f986a724c28e5e4657946f848688d848fa7e6f82cd21e01f024b6adbb40;
@@ -74,7 +74,7 @@ abstract contract SSTORE3 {
     }
 
     function sstore3(uint256 pointer, bytes memory data) internal returns (address store) {
-        uint length = data.length;
+        uint256 length = data.length;
         if (length > MAX_DATA_SIZE) revert DataTooLarge();
         buffer.write(data);
 
