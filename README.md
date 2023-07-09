@@ -62,7 +62,7 @@ pointer, allowing you to pack it with other values in more situations.
 
 Standalone, SSTORE2-based storage is slightly cheaper to read from than SSTORE3, however SSTORE2
 requires you to update & store a full address as the data pointer. If you're able to store a full
-address in stoage alongside your other variables **without** increasing the amount of unique storage
+address in storage alongside your other variables **without** increasing the amount of unique storage
 slots to be read in your function(s) it'll be net-cheaper to use SSTORE2.
 
 **Reducing SSTORE2 Pointer Size**
