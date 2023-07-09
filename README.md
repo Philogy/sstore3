@@ -9,7 +9,7 @@ other storage variables, saving more gas.
 
 ### Writing Data
 
-|EVM words (32-bytes)|SSTORE2|SSTORE2 + CREATE3|SSTORE3 (est. w/ EIP1153)|SSTORE3|
+|EVM words (32-bytes)|SSTORE2|CREATE3-based CaS|SSTORE3 (est. w/ EIP1153)|SSTORE3|
 |-------|---------|-------------------|---------------------------|---------|
 |1 word|42.1k (1,315.2 g/b)|76.0k (2,374.7 g/b)|43.2k (1,350.0 g/b)|47.6k (1,488.8 g/b)|
 |2 words|48.4k (757.0 g/b)|82.4k (1,288.2 g/b)|50.0k (781.0 g/b)|56.6k (885.1 g/b)|
