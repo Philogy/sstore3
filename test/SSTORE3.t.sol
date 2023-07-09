@@ -25,8 +25,4 @@ contract SSTORE3Test is Test {
         assertEq(dataOut, data);
         assertEq(storeAddr.code, abi.encodePacked(bytes1(hex"00"), data));
     }
-
-    function test_test() public {
-        test_fuzzingStoreLoad(0, hex"");
-    }
 }

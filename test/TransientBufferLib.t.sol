@@ -15,7 +15,7 @@ contract TransientBufferTest is Test {
     }
 
     function testDefault() public {
-        assertEq(readBuffer(), hex"00");
+        assertEq(readBuffer(), new bytes(0));
     }
 
     function test_fuzzingWriteRead(bytes memory randomBytes) public {
@@ -24,7 +24,7 @@ contract TransientBufferTest is Test {
             mstore(randomBytes, boundLength)
         }
         buffer.write(randomBytes);
-        assertEq(readBuffer(), abi.encodePacked(hex"00", randomBytes));
+        assertEq(readBuffer(), randomBytes);
     }
 
     function readBuffer() internal returns (bytes memory) {
