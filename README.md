@@ -5,6 +5,32 @@ to efficiently store and retrieve large amounts of data programmatically. The co
 is that it allows for **smaller pointer sizes**, allowing you to more easily pack the data pointer with
 other storage variables, saving more gas.
 
+## Benchmark
+
+### Writing Data
+
+|bytes|SSTORE2|SSTORE2 + CREATE3|SSTORE3 (est. w/ EIP1153)|SSTORE3|
+|-------|---------|-------------------|---------------------------|---------|
+|30 bytes|41.7k (1,388.6 g/b)|75.6k (2,519.7 g/b)|42.5k (1,415.5 g/b)|44.7k (1,489.5 g/b)|
+|1 word|42.1k (1,315.2 g/b)|76.0k (2,374.7 g/b)|43.2k (1,350.0 g/b)|47.6k (1,488.8 g/b)|
+|2 words|48.4k (757.0 g/b)|82.4k (1,288.2 g/b)|50.0k (781.0 g/b)|56.6k (885.1 g/b)|
+|3 words|54.9k (571.4 g/b)|88.8k (925.4 g/b)|56.8k (592.1 g/b)|65.7k (684.6 g/b)|
+|4 words|61.3k (479.0 g/b)|95.2k (744.0 g/b)|63.6k (496.5 g/b)|74.7k (583.3 g/b)|
+|5 words|67.7k (423.1 g/b)|101.6k (635.3 g/b)|70.4k (439.9 g/b)|83.7k (523.2 g/b)|
+|6 words|74.1k (385.8 g/b)|108.1k (563.0 g/b)|77.2k (401.8 g/b)|92.7k (482.8 g/b)|
+|7 words|80.5k (359.5 g/b)|114.5k (511.2 g/b)|84.0k (374.8 g/b)|101.7k (454.1 g/b)|
+|8 words|86.9k (339.4 g/b)|120.9k (472.3 g/b)|90.8k (354.6 g/b)|110.8k (432.7 g/b)|
+|9 words|93.3k (324.1 g/b)|127.3k (442.2 g/b)|97.6k (338.8 g/b)|119.8k (415.8 g/b)|
+|10 words|99.7k (311.7 g/b)|133.7k (417.8 g/b)|104.3k (325.9 g/b)|128.7k (402.2 g/b)|
+|15 words|131.8k (274.6 g/b)|165.8k (345.4 g/b)|138.3k (288.1 g/b)|173.8k (362.1 g/b)|
+|25 words|195.9k (244.8 g/b)|230.0k (287.5 g/b)|207.4k (259.3 g/b)|265.1k (331.4 g/b)|
+|50 words|356.1k (222.5 g/b)|390.3k (243.9 g/b)|388.0k (242.5 g/b)|501.3k (313.3 g/b)|
+|100 words|676.5k (211.4 g/b)|711.0k (222.2 g/b)|749.4k (234.2 g/b)|973.6k (304.2 g/b)|
+|250 words|1,637.8k (204.7 g/b)|1,673.3k (209.2 g/b)|1,833.4k (229.2 g/b)|2,390.6k (298.8 g/b)|
+|500 words|3,240.1k (202.5 g/b)|3,277.6k (204.8 g/b)|3,640.3k (227.5 g/b)|4,752.5k (297.0 g/b)|
+|24,575 bytes|4,958.0k (201.7 g/b)|4,997.6k (203.4 g/b)|5,577.7k (227.0 g/b)|7,284.9k (296.4 g/b)|
+
+
 ## The Code-as-Storage Pattern
 
 The _Code-as-Storage_ (CaS) pattern leverages the relative cost of loading bytecode vs. the cost of loading
