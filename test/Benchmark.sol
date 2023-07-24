@@ -5,6 +5,7 @@ import {Test} from "forge-std/Test.sol";
 import {SSTORE3_S} from "src/SSTORE3_S.sol";
 import {SSTORE3_L} from "src/SSTORE3_L.sol";
 import {SSTORE2} from "solady/utils/SSTORE2.sol";
+import {console2 as console} from "forge-std/console2.sol";
 
 /// @author philogy <https://github.com/philogy>
 contract Benchmark is Test, SSTORE3_S {
@@ -21,184 +22,61 @@ contract Benchmark is Test, SSTORE3_S {
         SSTORE3_L.store(EXAMPLE_PTR, exampleData);
     }
 
-    function test_SSTORE3_S_0020() public {
-        bytes memory d = randomBytes("0020", 32);
-        sstore3(0, d);
+    function test_SSTORE3_S() public {
+        // Warm all storage slots, cost of warming will be added back in later.
+        sstore3(0, randomBytes("warming data", 24575));
+        assembly {
+            mstore(0x40, 0x80)
+        }
+        uint256 pointer = 2;
+        for (uint256 size = 1; size < 100;) {
+            bytes memory d = randomBytes("sstore_bench", size);
+            uint256 before = gasleft();
+            sstore3(pointer, d);
+            unchecked {
+                uint256 delta = before - gasleft();
+                console.log("%s: %s,", size, delta);
+                assembly {
+                    mstore(0x40, 0x80)
+                }
+                pointer++;
+                size++;
+            }
+        }
     }
 
-    function test_SSTORE2_0020() public {
-        bytes memory d = randomBytes("0020", 32);
-        SSTORE2.write(d);
+    function test_SSTORE2() public {
+        for (uint256 size = 1; size < 24576;) {
+            bytes memory d = randomBytes("sstore_bench", size);
+            uint256 before = gasleft();
+            SSTORE2.write(d);
+            unchecked {
+                uint256 delta = before - gasleft();
+                console.log("%s: %s,", size, delta);
+                assembly {
+                    mstore(0x40, 0x80)
+                }
+                size++;
+            }
+        }
     }
 
-    function test_SSTORE3_L_0020() public {
-        bytes memory d = randomBytes("0020", 32);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_0040() public {
-        bytes memory d = randomBytes("0040", 64);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0040() public {
-        bytes memory d = randomBytes("0040", 64);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0040() public {
-        bytes memory d = randomBytes("0040", 64);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_0060() public {
-        bytes memory d = randomBytes("0060", 96);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0060() public {
-        bytes memory d = randomBytes("0060", 96);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0060() public {
-        bytes memory d = randomBytes("0060", 96);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_00a0() public {
-        bytes memory d = randomBytes("00a0", 160);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_00a0() public {
-        bytes memory d = randomBytes("00a0", 160);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_00a0() public {
-        bytes memory d = randomBytes("00a0", 160);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_0140() public {
-        bytes memory d = randomBytes("0140", 320);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0140() public {
-        bytes memory d = randomBytes("0140", 320);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0140() public {
-        bytes memory d = randomBytes("0140", 320);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_01e0() public {
-        bytes memory d = randomBytes("01e0", 480);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_01e0() public {
-        bytes memory d = randomBytes("01e0", 480);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_01e0() public {
-        bytes memory d = randomBytes("01e0", 480);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_0320() public {
-        bytes memory d = randomBytes("0320", 800);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0320() public {
-        bytes memory d = randomBytes("0320", 800);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0320() public {
-        bytes memory d = randomBytes("0320", 800);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_0640() public {
-        bytes memory d = randomBytes("0640", 1600);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0640() public {
-        bytes memory d = randomBytes("0640", 1600);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0640() public {
-        bytes memory d = randomBytes("0640", 1600);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_0c80() public {
-        bytes memory d = randomBytes("0c80", 3200);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0c80() public {
-        bytes memory d = randomBytes("0c80", 3200);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0c80() public {
-        bytes memory d = randomBytes("0c80", 3200);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_1f40() public {
-        bytes memory d = randomBytes("1f40", 8000);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_1f40() public {
-        bytes memory d = randomBytes("1f40", 8000);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_1f40() public {
-        bytes memory d = randomBytes("1f40", 8000);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_3e80() public {
-        bytes memory d = randomBytes("3e80", 16000);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_3e80() public {
-        bytes memory d = randomBytes("3e80", 16000);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_3e80() public {
-        bytes memory d = randomBytes("3e80", 16000);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_5fff() public {
-        bytes memory d = randomBytes("5fff", 24575);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_5fff() public {
-        bytes memory d = randomBytes("5fff", 24575);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_5fff() public {
-        bytes memory d = randomBytes("5fff", 24575);
-        SSTORE3_L.store(0, d);
+    function test_SSTORE3_L() public {
+        uint256 pointer = 2;
+        for (uint256 size = 1; size < 24576;) {
+            bytes memory d = randomBytes("sstore_bench", size);
+            uint256 before = gasleft();
+            SSTORE3_L.store(pointer, d);
+            unchecked {
+                uint256 delta = before - gasleft();
+                console.log("%s: %s,", size, delta);
+                assembly {
+                    mstore(0x40, 0x80)
+                }
+                pointer++;
+                size++;
+            }
+        }
     }
 
     function test_read_SSTORE2() public view {
