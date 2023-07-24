@@ -21,21 +21,6 @@ contract Benchmark is Test, SSTORE3_S {
         SSTORE3_L.store(EXAMPLE_PTR, exampleData);
     }
 
-    function test_SSTORE3_S_001e() public {
-        bytes memory d = randomBytes("001e", 30);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_001e() public {
-        bytes memory d = randomBytes("001e", 30);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_001e() public {
-        bytes memory d = randomBytes("001e", 30);
-        SSTORE3_L.store(0, d);
-    }
-
     function test_SSTORE3_S_0020() public {
         bytes memory d = randomBytes("0020", 32);
         sstore3(0, d);
@@ -81,21 +66,6 @@ contract Benchmark is Test, SSTORE3_S {
         SSTORE3_L.store(0, d);
     }
 
-    function test_SSTORE3_S_0080() public {
-        bytes memory d = randomBytes("0080", 128);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0080() public {
-        bytes memory d = randomBytes("0080", 128);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0080() public {
-        bytes memory d = randomBytes("0080", 128);
-        SSTORE3_L.store(0, d);
-    }
-
     function test_SSTORE3_S_00a0() public {
         bytes memory d = randomBytes("00a0", 160);
         sstore3(0, d);
@@ -108,66 +78,6 @@ contract Benchmark is Test, SSTORE3_S {
 
     function test_SSTORE3_L_00a0() public {
         bytes memory d = randomBytes("00a0", 160);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_00c0() public {
-        bytes memory d = randomBytes("00c0", 192);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_00c0() public {
-        bytes memory d = randomBytes("00c0", 192);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_00c0() public {
-        bytes memory d = randomBytes("00c0", 192);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_00e0() public {
-        bytes memory d = randomBytes("00e0", 224);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_00e0() public {
-        bytes memory d = randomBytes("00e0", 224);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_00e0() public {
-        bytes memory d = randomBytes("00e0", 224);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_0100() public {
-        bytes memory d = randomBytes("0100", 256);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0100() public {
-        bytes memory d = randomBytes("0100", 256);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0100() public {
-        bytes memory d = randomBytes("0100", 256);
-        SSTORE3_L.store(0, d);
-    }
-
-    function test_SSTORE3_S_0120() public {
-        bytes memory d = randomBytes("0120", 288);
-        sstore3(0, d);
-    }
-
-    function test_SSTORE2_0120() public {
-        bytes memory d = randomBytes("0120", 288);
-        SSTORE2.write(d);
-    }
-
-    function test_SSTORE3_L_0120() public {
-        bytes memory d = randomBytes("0120", 288);
         SSTORE3_L.store(0, d);
     }
 

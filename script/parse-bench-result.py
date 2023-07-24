@@ -6,9 +6,7 @@ def parse_result(result):
     if (m := re.match(r'\[PASS\] test_(\w+)_([a-f0-9]{4})\(\) \(gas: (\d+)\)', result)) is None:
         raise ValueError(f'Invalid result {result!r}')
 
-    name = m.group(1)
-
-    return {'SSTORE25': 'SSTORE2 + CREATE3'}.get(name, name), int(m.group(2), 16), int(m.group(3))
+    return m.group(1), int(m.group(2), 16), int(m.group(3))
 
 
 def s(x: int) -> str:
@@ -27,63 +25,52 @@ def gas_rep(gas, byte_count):
 
 def main():
     inp = '''
-[PASS] test_SSTORE25_001e() (gas: 75590)
-[PASS] test_SSTORE25_0020() (gas: 75991)
-[PASS] test_SSTORE25_0040() (gas: 82448)
-[PASS] test_SSTORE25_0060() (gas: 88840)
-[PASS] test_SSTORE25_0080() (gas: 95233)
-[PASS] test_SSTORE25_00a0() (gas: 101646)
-[PASS] test_SSTORE25_00c0() (gas: 108105)
-[PASS] test_SSTORE25_00e0() (gas: 114519)
-[PASS] test_SSTORE25_0100() (gas: 120911)
-[PASS] test_SSTORE25_0120() (gas: 127345)
-[PASS] test_SSTORE25_0140() (gas: 133697)
-[PASS] test_SSTORE25_01e0() (gas: 165808)
-[PASS] test_SSTORE25_0320() (gas: 229975)
-[PASS] test_SSTORE25_0640() (gas: 390264)
-[PASS] test_SSTORE25_0c80() (gas: 711037)
-[PASS] test_SSTORE25_1f40() (gas: 1673298)
-[PASS] test_SSTORE25_3e80() (gas: 3277598)
-[PASS] test_SSTORE25_5fff() (gas: 4997613)
-[PASS] test_SSTORE2_001e() (gas: 41657)
-[PASS] test_SSTORE2_0020() (gas: 42085)
+[PASS] test_SSTORE2_0020() (gas: 42128)
 [PASS] test_SSTORE2_0040() (gas: 48449)
-[PASS] test_SSTORE2_0060() (gas: 54855)
-[PASS] test_SSTORE2_0080() (gas: 61307)
-[PASS] test_SSTORE2_00a0() (gas: 67694)
-[PASS] test_SSTORE2_00c0() (gas: 74080)
-[PASS] test_SSTORE2_00e0() (gas: 80532)
-[PASS] test_SSTORE2_0100() (gas: 86897)
-[PASS] test_SSTORE2_0120() (gas: 93327)
-[PASS] test_SSTORE2_0140() (gas: 99733)
-[PASS] test_SSTORE2_01e0() (gas: 131796)
-[PASS] test_SSTORE2_0320() (gas: 195854)
+[PASS] test_SSTORE2_0060() (gas: 54921)
+[PASS] test_SSTORE2_00a0() (gas: 67649)
+[PASS] test_SSTORE2_0140() (gas: 99777)
+[PASS] test_SSTORE2_01e0() (gas: 131795)
+[PASS] test_SSTORE2_0320() (gas: 195920)
 [PASS] test_SSTORE2_0640() (gas: 356059)
-[PASS] test_SSTORE2_0c80() (gas: 676474)
-[PASS] test_SSTORE2_1f40() (gas: 1637779)
-[PASS] test_SSTORE2_3e80() (gas: 3240122)
+[PASS] test_SSTORE2_0c80() (gas: 676540)
+[PASS] test_SSTORE2_1f40() (gas: 1637734)
+[PASS] test_SSTORE2_3e80() (gas: 3240144)
 [PASS] test_SSTORE2_5fff() (gas: 4957987)
-[PASS] test_SSTORE3_001e() (gas: 44685)
-[PASS] test_SSTORE3_0020() (gas: 47641)
-[PASS] test_SSTORE3_0040() (gas: 56646)
-[PASS] test_SSTORE3_0060() (gas: 65719)
-[PASS] test_SSTORE3_0080() (gas: 74658)
-[PASS] test_SSTORE3_00a0() (gas: 83711)
-[PASS] test_SSTORE3_00c0() (gas: 92695)
-[PASS] test_SSTORE3_00e0() (gas: 101725)
-[PASS] test_SSTORE3_0100() (gas: 110762)
-[PASS] test_SSTORE3_0120() (gas: 119761)
-[PASS] test_SSTORE3_0140() (gas: 128702)
-[PASS] test_SSTORE3_01e0() (gas: 173802)
-[PASS] test_SSTORE3_0320() (gas: 265127)
-[PASS] test_SSTORE3_0640() (gas: 501255)
-[PASS] test_SSTORE3_0c80() (gas: 973592)
-[PASS] test_SSTORE3_1f40() (gas: 2390581)
-[PASS] test_SSTORE3_3e80() (gas: 4752515)
-[PASS] test_SSTORE3_5fff() (gas: 7284876)
+[PASS] test_SSTORE3_L_0020() (gas: 76061)
+[PASS] test_SSTORE3_L_0040() (gas: 82452)
+[PASS] test_SSTORE3_L_0060() (gas: 88889)
+[PASS] test_SSTORE3_L_00a0() (gas: 101718)
+[PASS] test_SSTORE3_L_0140() (gas: 133787)
+[PASS] test_SSTORE3_L_01e0() (gas: 165880)
+[PASS] test_SSTORE3_L_0320() (gas: 229998)
+[PASS] test_SSTORE3_L_0640() (gas: 390291)
+[PASS] test_SSTORE3_L_0c80() (gas: 711094)
+[PASS] test_SSTORE3_L_1f40() (gas: 1673349)
+[PASS] test_SSTORE3_L_3e80() (gas: 3277671)
+[PASS] test_SSTORE3_L_5fff() (gas: 4997655)
+[PASS] test_SSTORE3_S_0020() (gas: 47961)
+[PASS] test_SSTORE3_S_0040() (gas: 56875)
+[PASS] test_SSTORE3_S_0060() (gas: 65884)
+[PASS] test_SSTORE3_S_00a0() (gas: 83897)
+[PASS] test_SSTORE3_S_0140() (gas: 128999)
+[PASS] test_SSTORE3_S_01e0() (gas: 173989)
+[PASS] test_SSTORE3_S_0320() (gas: 265277)
+[PASS] test_SSTORE3_S_0640() (gas: 501406)
+[PASS] test_SSTORE3_S_0c80() (gas: 973725)
+[PASS] test_SSTORE3_S_1f40() (gas: 2390768)
+[PASS] test_SSTORE3_S_3e80() (gas: 4752718)
+[PASS] test_SSTORE3_S_5fff() (gas: 7285040)
+[PASS] test_read_SSTORE2() (gas: 3299)
+[PASS] test_read_SSTORE3_L() (gas: 3557)
+[PASS] test_read_SSTORE3_S() (gas: 3330)
     '''.strip()
 
-    rows = [*map(parse_result, inp.splitlines())]
+    rows = [
+        parse_result(line)
+        for line in inp.splitlines()
+        if not line.startswith('[PASS] test_read')
+    ]
 
     table = defaultdict(dict)
 
@@ -92,14 +79,16 @@ def main():
 
     table_rows = sorted(table.items(), key=lambda v: v[0])
 
-    columns = ['bytes', 'SSTORE2', 'SSTORE2 + CREATE3',
-               'SSTORE3 (est. w/ EIP1153)',  'SSTORE3']
+    columns = ['Data Size (1 word = 32 bytes)', 'SSTORE2', 'SSTORE3_S',
+               'SSTORE3_M (est. w/ EIP1153)',  'SSTORE3_L']
 
     print(build_md_row(columns))
     print(build_md_row('-' * (len(o) + 2) for o in columns))
 
     for byte_count, row_gas in table_rows:
-        if byte_count % 32 != 0:
+        if byte_count == 24_575:
+            byte_rep = f'24,575 bytes (maximum)'
+        elif byte_count % 32 != 0:
             byte_rep = f'{byte_count:,} byte{s(byte_count)}'
         else:
             word_count = byte_count // 32
@@ -108,14 +97,14 @@ def main():
         row = [byte_rep]
 
         row.append(gas_rep(row_gas['SSTORE2'], byte_count))
-        row.append(gas_rep(row_gas['SSTORE2 + CREATE3'], byte_count))
+        row.append(gas_rep(row_gas['SSTORE3_S'], byte_count))
 
         # EIP1153 SSTORE (no warming slot -2000 / slot, no reset ~ -120 / slot)
         slots = byte_count // 32 + 1 + (byte_count % 32 == 31)
-        sstore3_gas = row_gas['SSTORE3'] - slots * (2100 + 120)
+        sstore3_gas = row_gas['SSTORE3_S'] - slots * (2100 + 120)
         row.append(gas_rep(sstore3_gas, byte_count))
 
-        row.append(gas_rep(row_gas['SSTORE3'], byte_count))
+        row.append(gas_rep(row_gas['SSTORE3_L'], byte_count))
 
         print(build_md_row(row))
 
