@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {TransientBuffer} from "./TransientBuffer.sol";
 
 /// @author philogy <https://github.com/philogy>
-abstract contract SSTORE3 {
+abstract contract SSTORE3_S {
     TransientBuffer private buffer;
 
     uint256 internal constant MAX_DATA_SIZE = 24575;
@@ -12,7 +12,7 @@ abstract contract SSTORE3 {
     /**
      * -------------------------------------------------------------------------------------+
      *                                                                                      |
-     * CREATION (31 bytes)                                                                  |
+     * CREATION (32 bytes)                                                                  |
      *                                                                                      |
      * -----+-------------+---------------------------+--------------+----------------------+
      * PC   | Opcode      | Mnemonic                  | Stack        | Memory               |
@@ -52,6 +52,7 @@ abstract contract SSTORE3 {
      * 0x1e | 34          | CALLVALUE                 | 0 size       | [1..rds): store data |
      * 0x1f | f3          | RETURN                    |              | [1..rds): store data |
      * -----+-------------+---------------------------+--------------+----------------------+
+     *
      * @dev Generated from `./StoreInitializer.huff`. Uses `CALLVALUE` as backwards compatible
      * PUSH0 (`CREATE2` is always done without any ETH).
      */
@@ -61,6 +62,7 @@ abstract contract SSTORE3 {
     error DataRangeInvalid(uint256 start, uint256 end);
     error FailedToInitializeStore();
     error DataTooLarge();
+    error InvalidPointer();
 
     function __getStore() external view {
         buffer.directReturn();
@@ -83,6 +85,7 @@ abstract contract SSTORE3 {
             mstore(0x00, STORE_BYTECODE)
             store := create2(0, 0, 32, pointer)
             if iszero(store) {
+                // `revert FailedToInitializeStore()`.
                 mstore(0x00, 0x8767addc)
                 revert(0x1c, 0x04)
             }
@@ -103,7 +106,15 @@ abstract contract SSTORE3 {
             let store := keccak256(0xb, 0x55)
 
             // Get size.
-            let size := sub(extcodesize(store), 1)
+            let ptrCodesize := extcodesize(store)
+
+            if iszero(ptrCodesize) {
+                // `revert InvalidPointer()`
+                mstore(0x00, 0x11052bb4)
+                revert(0x1c, 0x04)
+            }
+
+            let size := sub(ptrCodesize, 1)
 
             // Restore free pointer.
             let dataOffset := add(data, 0x20)

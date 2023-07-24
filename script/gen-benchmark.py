@@ -15,7 +15,7 @@ def main():
     for l in lengths:
         print(f'''
 
-          function test_SSTORE3_{l:04x}() public {{
+          function test_SSTORE3_S_{l:04x}() public {{
         bytes memory d = randomBytes("{l:04x}", {l});
         sstore3(0, d);
     }}
@@ -25,9 +25,9 @@ def main():
         SSTORE2.write(d);
     }}
 
-              function test_SSTORE25_{l:04x}() public {{
+              function test_SSTORE3_L_{l:04x}() public {{
                   bytes memory d = randomBytes("{l:04x}", {l});
-        SSTORE2_5.write(0, d);
+        SSTORE3_L.store(0, d);
     }}
 
               ''')

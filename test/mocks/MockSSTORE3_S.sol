@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import {SSTORE3} from "src/SSTORE3.sol";
+import {SSTORE3_S} from "src/SSTORE3_S.sol";
 
 /// @author philogy <https://github.com/philogy>
-contract MockSSTORE3 is SSTORE3 {
+contract MockSSTORE3_S is SSTORE3_S {
     constructor(uint256 initEnd) {
         _bufferInitPrimary();
         _bufferInitRange(0, initEnd);
